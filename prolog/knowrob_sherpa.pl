@@ -33,8 +33,9 @@ Copyright (C) 2016 Fereshta Yazdani
    sherpa_interface/0,
    sherpa_interface/1,
    get_all_objects/1,
-   check_object_type/3,
-   get_object_type/2
+   get_all_properties/1,
+   get_object_properties/2,
+   check_object_property/3
   ]).
 
 :- use_module(library('semweb/rdf_db')).
@@ -48,8 +49,9 @@ Copyright (C) 2016 Fereshta Yazdani
 :- rdf_meta sherpa_test(r,r),
     sherpa_interface(r),
     get_all_objects(r),
-    check_object_type(r,r,r),
-    get_object_type(r,r).
+    get_all_properties(r),
+    get_object_properties(r,r),
+    check_object_property(r,r,r).
 
 :- rdf_db:rdf_register_ns(knowrob, 'http://knowrob.org/kb/knowrob.owl#', [keep(true)]).
 
@@ -69,17 +71,33 @@ get_all_objects(Bnt) :-
     sherpa_interface(SAR),
     map_root_objects(_,ALL),
     jpl_list_to_array(ALL, ARR),
-    jpl_call(SAR, 'queryAllObjects', [ARR], Ant),
+    jpl_call(SAR, 'getAllObjects', [ARR], Ant),
     jpl_array_to_list(Ant,Bnt).
 
-get_object_type(Ant,Bnt) :-
+get_object_properties(Ant,Cnt) :-
     sherpa_interface(SAR),
-    jpl_call(SAR, 'bindNamespace', [Ant], NAM),
-    map_object_type(NAM,Cnt),
-    jpl_call(SAR, 'getObjectType',[Cnt], Bnt).
+    jpl_call(SAR, 'addNamespace', [Ant], Bnt),
+    map_object_type(Bnt,TYPE),
+    owl_has(Bnt, 'http://knowrob.org/kb/knowrob.owl#colorOfObject',literal(type(_,COLOR))),
+    jpl_call(SAR, 'elemsToList', [TYPE,COLOR], Dnt),
+    jpl_array_to_list(Dnt,Cnt).
 
-check_object_type(Ant,Bnt,Cnt) :-
+get_all_properties(Bnt) :-
     sherpa_interface(SAR),
-    jpl_call(SAR, 'bindNamespace', [Ant], NAM),
-    map_object_type(NAM,TYP),
-    jpl_call(SAR, 'checkObjectType',[TYP,Bnt], Cnt).
+    jpl_call(SAR, 'getAllProperties', [], Ant),
+    jpl_array_to_list(Ant,Bnt).
+
+check_object_property(NAME,PROP,Cnt) :-
+    sherpa_interface(SAR),
+    jpl_call(SAR, 'addNamespace', [NAME], NOM),
+    map_object_type(NOM,TYPE),
+    jpl_call(SAR, 'replaceString', [TYPE], TYP),
+    jpl_call(SAR, 'addNamespace', [PROP], PRO),
+    owl_has(NOM, 'http://knowrob.org/kb/knowrob.owl#colorOfObject',literal(type(_,COLOR))), 
+    jpl_call(SAR, 'replaceString', [COLOR], FARB),
+    check_rules(TYP,FARB,PRO,Cnt).
+
+    check_rules(TYPE,COLOR,PROP,RESULT) :-
+    ==(TYPE,PROP) -> =(RESULT, 'true');
+    ==(COLOR,PROP) -> =(RESULT, 'true');
+    =(RESULT,'false').
