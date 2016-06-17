@@ -36,7 +36,8 @@ Copyright (C) 2016 Fereshta Yazdani
    get_all_properties/1,
    get_object_properties/2,
    check_object_property/3,
-   check_objects_relation/4
+   check_objects_relation/4,
+   get_all_salient_objects/1
   ]).
 
 :- use_module(library('semweb/rdf_db')).
@@ -49,11 +50,13 @@ Copyright (C) 2016 Fereshta Yazdani
 
 :- rdf_meta sherpa_test(r,r),
     sherpa_interface(r),
+    sherpa_interface2(r),
     get_all_objects(r),
     get_all_properties(r),
     get_object_properties(r,r),
     check_object_property(r,r,r),
-    check_objects_relation(r,r,r,r).
+    check_objects_relation(r,r,r,r),
+    get_all_salient_objects(r).
 
 :- rdf_db:rdf_register_ns(knowrob, 'http://knowrob.org/kb/knowrob.owl#', [keep(true)]).
 
@@ -65,7 +68,7 @@ sherpa_interface(SAR) :-
     jpl_new('com.github.knowrob_sherpa.SARInterface', [], SAR),
     retract(sherpa_inter(fail)),
     assert(sherpa_inter(SAR)),!.
-
+    
 sherpa_interface(DB) :-
     sherpa_inter(DB).
 
@@ -112,3 +115,10 @@ check_objects_relation(Ant,Bnt,Cnt,Res) :-
     ==(Ent,1) -> =(Res, 'true');
 =(Res,'false'),!.
 
+get_all_salient_objects(Ant) :-
+    jpl_new('com.github.knowrob_sherpa.ClientInterface', [], Client),
+    jpl_list_to_array(['com.github.knowrob_sherpa.client.SHERPA'], Arr),
+    jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
+    jpl_call(Client, 'getAllSalientObjects',[], Bnt),
+    jpl_array_to_list(Bnt,Ant).
+    
