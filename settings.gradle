@@ -15,3 +15,4 @@
  */
 
 include 'knowrob_sherpa'
+include 'cmd_mission'

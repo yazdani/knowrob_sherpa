@@ -35,3 +35,6 @@
 :- register_ros_package(knowrob_objects).
 
 :- use_module(library('knowrob_sherpa')).
+# :- use_module(library('env_mission')).
+
+:- owl_parser:owl_parse('package://env_mission/owl/mountain_map01.owl').

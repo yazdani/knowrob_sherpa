@@ -2,8 +2,156 @@ package com.github.knowrob_sherpa;
 
 import java.util.ArrayList;
 
-public class SARInterface{
+import org.ros.exception.RemoteException;
+import org.ros.exception.RosRuntimeException;
+import org.ros.exception.ServiceNotFoundException;
+import org.ros.namespace.GraphName;
+import org.ros.node.AbstractNodeMain;
+import org.ros.node.ConnectedNode;
+import org.ros.node.NodeMain;
+import org.ros.node.service.ServiceClient;
+import org.ros.node.service.ServiceResponseListener;
+
+import cmd_mission.*;
+
+public class SARInterface extends AbstractNodeMain{
     
+    private String property;
+    private String object1;
+    private String object2;
+    public int result;
+    
+    public ConnectedNode node;
+    ServiceClient<cmd_mission.check_objs_relationRequest, cmd_mission.check_objs_relationResponse> serviceClient;
+
+    //  public SARInterface() {
+	
+    //	System.out.println("SAR-Interface is starting");
+    // }
+    
+ @Override
+  public GraphName getDefaultNodeName() {
+    return GraphName.of("cmd_mission/client");
+  }
+    
+  @Override
+  public void onStart(final ConnectedNode connectedNode) {
+      this.node = connectedNode;
+      // wait for node to be ready
+      try {
+	  while(node == null) {
+	      Thread.sleep(100);
+	  }
+      } catch (InterruptedException e) {
+	  e.printStackTrace();
+      }
+
+    try {
+	String service_name = "check_objs_relation";
+	serviceClient = node.newServiceClient(service_name, cmd_mission.check_objs_relation._TYPE);
+    } catch (ServiceNotFoundException e) {
+      throw new RosRuntimeException(e);
+    }
+  }
+    public void callService(String property, String obj1, String obj2)
+	{
+	    setProp(property);
+	    setObject1(obj1);
+	    setObject2(obj2);
+	    //System.out.println(serviceClient+" haha ");
+	    try {
+		serviceClient = null;
+		while(serviceClient == null) {
+		    System.out.println("Waiting for service client.");
+		    Thread.sleep(100);
+			}
+		} catch (InterruptedException e) {
+			
+			e.printStackTrace();
+		}
+	    cmd_mission.check_objs_relationRequest request;
+	    request = serviceClient.newMessage();
+	    request.setProperty(property);
+	    request.setObj1(obj1);
+	    request.setObj2(obj2);
+	    //System.out.println(serviceClient+" haha2 ");
+	    serviceClient.call(request,new ServiceResponseListener<cmd_mission.check_objs_relationResponse>()				
+			{
+			    @Override
+			    public void onSuccess(cmd_mission.check_objs_relationResponse response) {
+		
+				setResult(response.getResultCheck());		 
+	}
+			@Override
+			public void onFailure(RemoteException e) {
+				System.out.println("Failed to call the service");
+				throw new RosRuntimeException(e);
+			}
+					    });
+}
+  public void setResult(boolean res)
+    {
+	if(!res)
+	    {
+		result = 0;
+	    }else
+	    {
+		result = 1;
+	    }
+    }
+
+    public int getResult()
+    {
+	return result;
+    }
+    
+    public int checkRelationBetweenObjects(String property, String object1, String object2)
+    {
+	result = 3;
+	callService(property,object1,object2);
+	try {
+	    while(result == 3) {
+		Thread.sleep(100);
+	    }
+	} catch (InterruptedException e) {
+	    e.printStackTrace();
+	}
+      return result;
+
+   }
+
+  
+
+    public void setProp(String prop)
+    {
+	property = prop;
+    }
+
+    public String getProp()
+    {
+	return property;
+    }
+
+    public void setObject1(String prop)
+    {
+	object1 = prop;
+    }
+
+    public String getObject1()
+    {
+	return object1;
+    }
+
+    public void setObject2(String prop)
+    {
+	object2 = prop;
+    }
+
+    public String getObject2()
+    {
+	return object2;
+    }
+
     /**
      * Getting all Objects of the map
      *
@@ -11,7 +159,7 @@ public class SARInterface{
     public String[] getAllObjects(String[] objs)
     {
 	//	System.out.println("queryAllObjects");
-	ArrayList<String> list = new ArrayList<>();
+	ArrayList<String> list = new ArrayList<String>();
 	for(int index = 0; index < objs.length; index++)
 	    {
 		if(objs[index].contains("#"))
@@ -38,7 +186,7 @@ public class SARInterface{
      **/
     public String[] getAllProperties()
     {
-	ArrayList<String> list1 = new ArrayList<>();	
+	ArrayList<String> list1 = new ArrayList<String>();	
 	list1.add("red");
 	list1.add("darkred");
 	list1.add("green");
@@ -191,9 +339,7 @@ public class SARInterface{
 		
 	return objtype;
     }
-
-    public SARInterface() {
-	System.out.println("SAR-Interface is starting");
-    }
+    
+  
 
 }
