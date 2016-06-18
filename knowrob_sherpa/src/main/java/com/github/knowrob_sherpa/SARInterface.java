@@ -62,7 +62,7 @@ public class SARInterface extends AbstractNodeMain{
 	    try {
 		serviceClient = null;
 		while(serviceClient == null) {
-		    System.out.println("Waiting for service client.");
+		    //System.out.println("Waiting for service client.");
 		    Thread.sleep(100);
 			}
 		} catch (InterruptedException e) {

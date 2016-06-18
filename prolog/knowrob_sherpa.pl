@@ -34,6 +34,7 @@ Copyright (C) 2016 Fereshta Yazdani
    sherpa_interface/1,
    get_all_objects/1,
    get_all_properties/1,
+   get_object_size/2,
    get_object_properties/2,
    check_object_property/3,
    check_objects_relation/4,
@@ -53,6 +54,7 @@ Copyright (C) 2016 Fereshta Yazdani
     sherpa_interface2(r),
     get_all_objects(r),
     get_all_properties(r),
+    get_object_size(r,r),
     get_object_properties(r,r),
     check_object_property(r,r,r),
     check_objects_relation(r,r,r,r),
@@ -120,5 +122,10 @@ get_all_salient_objects(Ant) :-
     jpl_list_to_array(['com.github.knowrob_sherpa.client.SHERPA'], Arr),
     jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
     jpl_call(Client, 'getAllSalientObjects',[], Bnt),
-    jpl_array_to_list(Bnt,Ant).
+    jpl_array_to_list(Bnt,Ant),!.
     
+get_object_size(Ant,Bnt) :-
+    jpl_new('com.github.knowrob_sherpa.ObjSizeInterface', [], Client),
+    jpl_list_to_array(['com.github.knowrob_sherpa.client.SHERPA'], Arr),
+    jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
+    jpl_call(Client, 'getObjectSize',[Ant],Bnt),!.

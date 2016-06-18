@@ -14,17 +14,11 @@ import org.ros.node.service.ServiceResponseListener;
 
 import cmd_mission.*;
 
-public class ClientInterface extends AbstractNodeMain{
-    
-    private String property;
-    private String object1;
-    private String object2;
-    public ArrayList<String> results;
-
-    public int result;
+public class ObjSizeInterface extends AbstractNodeMain{
+    private String result;
     
     public ConnectedNode node;
-    ServiceClient<cmd_mission.salient_objsRequest, cmd_mission.salient_objsResponse> serviceClient;
+    ServiceClient<cmd_mission.get_obj_typeRequest, cmd_mission.get_obj_typeResponse> serviceClient;
 
     //  public SARInterface() {
 	
@@ -49,13 +43,13 @@ public class ClientInterface extends AbstractNodeMain{
       }
 
     try {
-	String service_name = "salient_objs";
-	serviceClient = node.newServiceClient(service_name, cmd_mission.salient_objs._TYPE);
+	String service_name = "get_obj_size";
+	serviceClient = node.newServiceClient(service_name, cmd_mission.get_obj_type._TYPE);
     } catch (ServiceNotFoundException e) {
       throw new RosRuntimeException(e);
     }
   }
-    public void calledService ()
+    public void calledTheService (String objname)
 	{
 	    try {
         	 serviceClient = null;
@@ -67,15 +61,15 @@ public class ClientInterface extends AbstractNodeMain{
 
 			 e.printStackTrace();
 		 }
-	    cmd_mission.salient_objsRequest request;
+	    cmd_mission.get_obj_typeRequest request;
 	    request = serviceClient.newMessage();
-	    request.setSal("test");
-	    serviceClient.call(request,new ServiceResponseListener<cmd_mission.salient_objsResponse>()				
+	    request.setObjname(objname);
+	    serviceClient.call(request,new ServiceResponseListener<cmd_mission.get_obj_typeResponse>()				
 			{
 			    @Override
-			    public void onSuccess(cmd_mission.salient_objsResponse response) {
+			    public void onSuccess(cmd_mission.get_obj_typeResponse response) {
 		
-				setResults(response.getResultSalient());
+				setResult(response.getResultType());
 				
 	}
 			@Override
@@ -86,30 +80,29 @@ public class ClientInterface extends AbstractNodeMain{
 					    });
 }
 
-    public ArrayList<String> setResults(List<String> res)
+    public String getObjectSize(String name)
     {
-	for(int index = 0; index < res.size(); index++)
-	    {
-		results.add(res.get(index));
-	    }
-
-	return results;
-    }
-
-    public String[] getAllSalientObjects()
-    {
-	results = new ArrayList<String>();
-	calledService();
+	result = "";
+	calledTheService(name);
 	try {
-	    while(results.size() == 0) {
+	    while(result.equals("")) {
 		Thread.sleep(100);
 	    }
 	} catch (InterruptedException e) {
 	    e.printStackTrace();
 	}
-	String[] array = new String[results.size()];
-	array = results.toArray(array); 
-	return array;
-
+	return result;
    }
+
+
+  public void setResult(String res)
+    {
+	result = res;
+    }
+
+    public String getResult()
+    {
+	return result;
+    }
+
 }
