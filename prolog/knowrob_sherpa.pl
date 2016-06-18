@@ -35,6 +35,7 @@ Copyright (C) 2016 Fereshta Yazdani
    get_all_objects/1,
    get_all_properties/1,
    get_object_size/2,
+   get_size/2,
    get_object_properties/2,
    check_object_property/3,
    check_objects_relation/4,
@@ -55,6 +56,7 @@ Copyright (C) 2016 Fereshta Yazdani
     get_all_objects(r),
     get_all_properties(r),
     get_object_size(r,r),
+    get_size(r,r),
     get_object_properties(r,r),
     check_object_property(r,r,r),
     check_objects_relation(r,r,r,r),
@@ -79,20 +81,21 @@ get_all_objects(Bnt) :-
     map_root_objects(_,ALL),
     jpl_list_to_array(ALL, ARR),
     jpl_call(SAR, 'getAllObjects', [ARR], Ant),
-    jpl_array_to_list(Ant,Bnt).
+    jpl_array_to_list(Ant,Bnt),!.
 
 get_object_properties(Ant,Cnt) :-
     sherpa_interface(SAR),
     jpl_call(SAR, 'addNamespace', [Ant], Bnt),
     map_object_type(Bnt,TYPE),
     owl_has(Bnt, 'http://knowrob.org/kb/knowrob.owl#colorOfObject',literal(type(_,COLOR))),
-    jpl_call(SAR, 'elemsToList', [TYPE,COLOR], Dnt),
-    jpl_array_to_list(Dnt,Cnt).
+    get_size(Ant,SIZE),
+    jpl_call(SAR, 'elemsToList', [TYPE,COLOR,SIZE], Dnt),
+    jpl_array_to_list(Dnt,Cnt),!.
 
 get_all_properties(Bnt) :-
     sherpa_interface(SAR),
     jpl_call(SAR, 'getAllProperties', [], Ant),
-    jpl_array_to_list(Ant,Bnt).
+    jpl_array_to_list(Ant,Bnt),!.
 
 check_object_property(NAME,PROP,Cnt) :-
     sherpa_interface(SAR),
@@ -102,12 +105,12 @@ check_object_property(NAME,PROP,Cnt) :-
     jpl_call(SAR, 'addNamespace', [PROP], PRO),
     owl_has(NOM, 'http://knowrob.org/kb/knowrob.owl#colorOfObject',literal(type(_,COLOR))), 
     jpl_call(SAR, 'replaceString', [COLOR], FARB),
-    check_rules(TYP,FARB,PRO,Cnt).
+    check_rules(TYP,FARB,PRO,Cnt),!.
 
     check_rules(TYPE,COLOR,PROP,RESULT) :-
     ==(TYPE,PROP) -> =(RESULT, 'true');
     ==(COLOR,PROP) -> =(RESULT, 'true');
-    =(RESULT,'false').
+    =(RESULT,'false'),!.
 
 check_objects_relation(Ant,Bnt,Cnt,Res) :-
     sherpa_interface(SAR),
@@ -129,3 +132,6 @@ get_object_size(Ant,Bnt) :-
     jpl_list_to_array(['com.github.knowrob_sherpa.client.SHERPA'], Arr),
     jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
     jpl_call(Client, 'getObjectSize',[Ant],Bnt),!.
+
+get_size(Ant,Bnt) :-
+    get_object_size(Ant,Bnt),!.

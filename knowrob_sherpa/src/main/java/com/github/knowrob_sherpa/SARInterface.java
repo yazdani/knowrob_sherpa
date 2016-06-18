@@ -227,48 +227,88 @@ public class SARInterface extends AbstractNodeMain{
 	return str;
     }
 
-    public String[] elemsToList(String type, String color)
+    public String[] elemsToList(String type, String color, String size)
     {
-	String[] str = new String[2];
-	if(type.contains("#"))
-	    {
-		System.out.println("test1");
-		String[] parts = type.split("#");
-		System.out.println(parts[1]);
-		if(parts[1].equals("bigtree"))
-		    {
-		    str[0] = "tree";
-		    }else
-		    {
-		    str[0] = parts[1];
-		    }
-	    }else if(!type.contains("#") && type.contains(":"))
-	    {
-		System.out.println("test2");
-		String[] parts = type.split(":");
-		if(parts[1].equals("bigtree"))
-		    {
-			str[0] = "tree";
-		    }else
-		    {
-			str[0] = parts[1];
-		    }
-	    }else
-	    {
-		System.out.println("test3");
-		if(type.equals("bigtree"))
-		    {
-			str[0] = "tree";
-		    }else
-		    {
-			str[0] = type;
-		    }
-		
-	    }
-	str[1] = color;
+	String[] str;
+	if(size.equals("middle"))
+	   {
+	        str = new String[2];
+	       if(type.contains("#"))
+		   {
+		   
+		       String[] parts = type.split("#");
+		 
+		       if(parts[1].equals("bigtree"))
+			   {
+			       str[0] = "tree";
+			   }else
+			   {
+			       str[0] = parts[1];
+			   }
+		   }else if(!type.contains("#") && type.contains(":"))
+		   {
+		       String[] parts = type.split(":");
+		       if(parts[1].equals("bigtree"))
+			   {
+			       str[0] = "tree";
+			   }else
+			   {
+			       str[0] = parts[1];
+			   }
+		   }else
+		   {
+		 	    if(type.equals("bigtree"))
+				{
+				    str[0] = "tree";
+				}else
+				{
+				    str[0] = type;
+				}
+			    
+		   }
+	       str[1] = color;
+	       
+	   }else
+		{
+		   str = new String[3];
+		    if(type.contains("#"))
+			{
+			    String[] parts = type.split("#");
+			    if(parts[1].equals("bigtree"))
+				{
+				    str[0] = "tree";
+				}else
+				{
+				    str[0] = parts[1];
+				}
+			}else if(!type.contains("#") && type.contains(":"))
+			{
+			    String[] parts = type.split(":");
+			    if(parts[1].equals("bigtree"))
+				{
+				    str[0] = "tree";
+				}else
+				{
+				    str[0] = parts[1];
+				}
+			}else
+			{
+	        	    if(type.equals("bigtree"))
+				{
+				    str[0] = "tree";
+				}else
+				{
+				    str[0] = type;
+				}
+			    
+			}
+		    str[1] = color;
+		    str[2] = size;
+		}
+
 	return str;
-    }
-    
+	   }
+	
     public String replaceString(String type)
     {
 	String result = "";
