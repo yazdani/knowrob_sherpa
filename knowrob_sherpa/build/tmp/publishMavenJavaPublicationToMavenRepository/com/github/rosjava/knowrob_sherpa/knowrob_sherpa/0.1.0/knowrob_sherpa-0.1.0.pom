@@ -13,6 +13,12 @@
       <scope>runtime</scope>
     </dependency>
     <dependency>
+      <groupId>com.github.rosjava.knowrob_sherpa</groupId>
+      <artifactId>quadrotor_controller</artifactId>
+      <version>0.0.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
       <groupId>org.ros.rosjava_core</groupId>
       <artifactId>rosjava</artifactId>
       <version>[0.2,0.3)</version>

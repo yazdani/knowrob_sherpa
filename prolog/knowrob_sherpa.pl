@@ -39,7 +39,9 @@ Copyright (C) 2016 Fereshta Yazdani
    get_object_properties/2,
    check_object_property/3,
    check_objects_relation/4,
-   get_all_salient_objects/1
+   get_all_salient_objects/1,
+   command_to_robot/2,
+   send_pose/2
   ]).
 
 :- use_module(library('semweb/rdf_db')).
@@ -60,7 +62,9 @@ Copyright (C) 2016 Fereshta Yazdani
     get_object_properties(r,r),
     check_object_property(r,r,r),
     check_objects_relation(r,r,r,r),
-    get_all_salient_objects(r).
+    get_all_salient_objects(r),
+    command_to_robot(r,r),
+    send_pose(r,r).
 
 :- rdf_db:rdf_register_ns(knowrob, 'http://knowrob.org/kb/knowrob.owl#', [keep(true)]).
 
@@ -135,3 +139,18 @@ get_object_size(Ant,Bnt) :-
 
 get_size(Ant,Bnt) :-
     get_object_size(Ant,Bnt),!.
+
+command_to_robot(Ant,S) :-
+    sherpa_interface(SAR),
+    jpl_call(SAR, 'parseCmd', [Ant], Cnt),
+    current_object_pose(Cnt,[X,Y,Z,QX,QY,QZ,QW]),
+    jpl_call(SAR, 'arrayToString', [X,Y,Z,QX,QY,QZ,QW], Zet),
+    send_pose(Zet, S),!.
+    
+
+send_pose(Zet, Ant) :-
+    jpl_new('com.github.knowrob_sherpa.QuadrotorPoseInterface', [], Client),
+    jpl_list_to_array(['com.github.knowrob_sherpa.client.Quadrotor'], Arr),
+    jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
+    jpl_call(Client, 'sendPose',[Zet],Ant),!.
+    

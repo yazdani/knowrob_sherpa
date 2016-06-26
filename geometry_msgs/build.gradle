@@ -14,10 +14,23 @@
  * the License.
  */
 
+/* This plugin is necessary for creating installApp tasks (i.e. executables) */
+apply plugin: 'application'
+mainClassName = 'org.ros.RosRun'
+
+/* 
+ Dependencies can be on external maven artifacts (such as rosjava_core
+ here) or on sibling subprojects. Fpr external maven artifact dependencies
+ it's convenient to use an open ranged dependency, but restrict it to
+ cover the patch version only to avoid breakages due to api changes
+ which usually occur on minor and major version numbers.
+*/
+
+
 try {
-    project.catkin.tree.generateMessageArtifact(project, 'cmd_mission')
+    project.catkin.tree.generateMessageArtifact(project, 'geometry_msgs')
 } catch (NullPointerException e) {
-    println("Couldn't find json_prolog_msgs on the ROS_PACKAGE_PATH")
+    println("Couldn't find geometry_msgs on the ROS_PACKAGE_PATH")
 }
 
 task writeClasspath << {
@@ -27,3 +40,4 @@ task writeClasspath << {
                                                project.name + "-" +
                                                project.version + ".jar" + "\n"
 }
+

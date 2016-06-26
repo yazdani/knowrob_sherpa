@@ -89,6 +89,13 @@ public class SARInterface extends AbstractNodeMain{
 			}
 					    });
 }
+
+    public String arrayToString(float x, float y, float z, float  qx, float qy, float qz, float qw)
+    {
+	return x+","+y+","+z+","+qx+","+qy+","+qz+","+qw;
+
+    }
+
   public void setResult(boolean res)
     {
 	if(!res)
@@ -120,6 +127,18 @@ public class SARInterface extends AbstractNodeMain{
 
    }
 
+    public String[] splitArray(String array)
+    {
+        String[] ar = new String[7];
+	ar[0] = "c";
+	ar[1] = "c";
+	ar[2] = "c";
+	ar[3] = "c";
+	ar[4] = "c";
+	ar[5] = "c";
+	ar[6] = "c";
+	return ar;
+    }
   
 
     public void setProp(String prop)
@@ -380,6 +399,15 @@ public class SARInterface extends AbstractNodeMain{
 	return objtype;
     }
     
+    public String parseCmd(String value)
+    {
+	System.out.println("parseCmd");
+       	System.out.println(value);
+	String[] parts = value.split("\\(");
+       	String[] parts1 = parts[1].split("\\)");
+	String result = addNamespace(parts1[0]);
+	return result;
+    }
   
 
 }

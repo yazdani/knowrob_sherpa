@@ -9,8 +9,9 @@ Bnd-LastModified: 1466159867000
 Created-By: 1.7.0_101 (Oracle Corporation)
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.github.rosjava.knowrob_sherpa
-Import-Package: cmd_mission;version="[0.0,1)",org.apache.commons.loggi
- ng;version="[1.1,2)",org.ros.concurrent,org.ros.exception,org.ros.mes
- sage,org.ros.namespace,org.ros.node,org.ros.node.service,org.ros.node
- .topic,std_msgs;version="[0.5,1)"
+Import-Package: cmd_mission;version="[0.0,1)",geometry_msgs;version="[
+ 1.11,2)",org.apache.commons.logging;version="[1.1,2)",org.ros.concurr
+ ent,org.ros.exception,org.ros.message,org.ros.namespace,org.ros.node,
+ org.ros.node.service,org.ros.node.topic,quadrotor_controller;version=
+ "[0.0,1)",std_msgs;version="[0.5,1)"
 
