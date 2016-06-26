@@ -15,9 +15,9 @@
  */
 
 try {
-    project.catkin.tree.generateMessageArtifact(project, 'cmd_mission')
+    project.catkin.tree.generateMessageArtifact(project, 'geometry_msgs')
 } catch (NullPointerException e) {
-    println("Couldn't find cmd_mission on the ROS_PACKAGE_PATH")
+    println("Couldn't find geometry_msgs on the ROS_PACKAGE_PATH")
 }
 
 task writeClasspath << {
