@@ -199,6 +199,25 @@ public class SARInterface extends AbstractNodeMain{
 	return array;
     }
 
+    public String removeNamespace(String name)
+    {
+	String result = "";
+	if(name.contains("#"))
+	    {
+		String[] parts = name.split("#");
+		result = parts[1];
+	    }else if(!name.contains("#") && name.contains(":"))
+		    {
+			String[] parts = name.split(":");
+			result = parts[1];
+		    }else
+		    {
+			result =name;
+		    }
+	    
+	return result;
+    }
+
     /**
      *  Getting all Properties
      *
@@ -221,6 +240,8 @@ public class SARInterface extends AbstractNodeMain{
 	list1.add("victim");
 	list1.add("mountain");
 	list1.add("rock");
+       	list1.add("animate");
+	list1.add("inanimate");
 	list1.add("behind");
 	list1.add("left");
 	list1.add("right");
@@ -234,7 +255,7 @@ public class SARInterface extends AbstractNodeMain{
 	for(int index=0; index < list1.size() ; index++)
 	    {
 		counter++;
-		if(counter <= 15)
+		if(counter <= 17)
 		    {
 			str[index] = list1.get(index)+" - "+"property";
 		    }else
@@ -246,12 +267,12 @@ public class SARInterface extends AbstractNodeMain{
 	return str;
     }
 
-    public String[] elemsToList(String type, String color, String size)
+    public String[] elemsToList(String type, String color, String size, String life)
     {
 	String[] str;
 	if(size.equals("middle"))
 	   {
-	        str = new String[2];
+	        str = new String[3];
 	       if(type.contains("#"))
 		   {
 		   
@@ -286,10 +307,11 @@ public class SARInterface extends AbstractNodeMain{
 			    
 		   }
 	       str[1] = color;
+	       str[2] = life;
 	       
 	   }else
 		{
-		   str = new String[3];
+		   str = new String[4];
 		    if(type.contains("#"))
 			{
 			    String[] parts = type.split("#");
@@ -322,7 +344,8 @@ public class SARInterface extends AbstractNodeMain{
 			    
 			}
 		    str[1] = color;
-		    str[2] = size;
+		    str[2] = life;
+		    str[3] = size;
 		}
 
 	return str;
