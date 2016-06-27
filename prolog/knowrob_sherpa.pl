@@ -88,12 +88,21 @@ get_all_objects(Bnt) :-
     jpl_array_to_list(Ant,Bnt),!.
 
 get_object_properties(Ant,Cnt) :-
+    format('1'),
     sherpa_interface(SAR),
+    format('2'),
     jpl_call(SAR, 'addNamespace', [Ant], Bnt),
+    format('3'),
     map_object_type(Bnt,TYPE),
+    format('4'),
     owl_has(Bnt, 'http://knowrob.org/kb/knowrob.owl#colorOfObject',literal(type(_,COLOR))),
+    format('5'),
     get_size(Ant,SIZE),
-    jpl_call(SAR, 'elemsToList', [TYPE,COLOR,SIZE], Dnt),
+    format('6'),
+    owl_has(TYPE,rdfs:subClassOf,ANI),
+    format('7'),
+    jpl_call(SAR, 'removeNamespace', [ANI], LIFE),
+    jpl_call(SAR, 'elemsToList', [TYPE,COLOR,SIZE,LIFE], Dnt),
     jpl_array_to_list(Dnt,Cnt),!.
 
 get_all_properties(Bnt) :-
@@ -109,11 +118,15 @@ check_object_property(NAME,PROP,Cnt) :-
     jpl_call(SAR, 'addNamespace', [PROP], PRO),
     owl_has(NOM, 'http://knowrob.org/kb/knowrob.owl#colorOfObject',literal(type(_,COLOR))), 
     jpl_call(SAR, 'replaceString', [COLOR], FARB),
-    check_rules(TYP,FARB,PRO,Cnt),!.
+    owl_has(TYPE,rdfs:subClassOf,ANI),
+    jpl_call(SAR, 'replaceString', [ANI], LIFE),
+    check_rules(TYP,FARB,PRO,LIFE,Cnt),!.
 
-    check_rules(TYPE,COLOR,PROP,RESULT) :-
+    check_rules(TYPE,COLOR,PROP,LIFE,RESULT) :-
+    ==(LIFE,PROP) -> =(RESULT, 'true');
     ==(TYPE,PROP) -> =(RESULT, 'true');
     ==(COLOR,PROP) -> =(RESULT, 'true');
+
     =(RESULT,'false'),!.
 
 check_objects_relation(Ant,Bnt,Cnt,Res) :-
@@ -132,12 +145,15 @@ get_all_salient_objects(Ant) :-
     jpl_array_to_list(Bnt,Ant),!.
     
 get_object_size(Ant,Bnt) :-
+    format('get_object_size'),
     jpl_new('com.github.knowrob_sherpa.ObjSizeInterface', [], Client),
     jpl_list_to_array(['com.github.knowrob_sherpa.client.SHERPA'], Arr),
     jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
+    format(Ant),
     jpl_call(Client, 'getObjectSize',[Ant],Bnt),!.
 
 get_size(Ant,Bnt) :-
+    format('get_size'),
     get_object_size(Ant,Bnt),!.
 
 command_to_robot(Ant,S) :-
