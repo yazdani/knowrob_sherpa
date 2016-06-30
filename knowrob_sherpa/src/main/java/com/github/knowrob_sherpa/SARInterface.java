@@ -226,22 +226,25 @@ public class SARInterface extends AbstractNodeMain{
     {
 	ArrayList<String> list1 = new ArrayList<String>();	
 	list1.add("red");
-	list1.add("darkred");
 	list1.add("green");
 	list1.add("darkgreen");
 	list1.add("blue");
-	list1.add("white");
+	list1.add("brown");
 	list1.add("yellow");
-	list1.add("darkgray");
-	list1.add("gray");
+	list1.add("darkgrey");
+	list1.add("grey");
 	list1.add("large");
 	list1.add("small");
 	list1.add("tree");
 	list1.add("victim");
+	list1.add("human");
+	list1.add("pylon");
 	list1.add("mountain");
 	list1.add("rock");
        	list1.add("animate");
 	list1.add("inanimate");
+        list1.add("broken");
+	list1.add("fixed");
 	list1.add("behind");
 	list1.add("left");
 	list1.add("right");
@@ -255,7 +258,7 @@ public class SARInterface extends AbstractNodeMain{
 	for(int index=0; index < list1.size() ; index++)
 	    {
 		counter++;
-		if(counter <= 17)
+		if(counter <= 18)
 		    {
 			str[index] = list1.get(index)+" - "+"property";
 		    }else
