@@ -257,14 +257,15 @@ public class SARInterface extends AbstractNodeMain{
 
 	for(int index=0; index < list1.size() ; index++)
 	    {
-		counter++;
-		if(counter <= 18)
+
+		if(counter <= 19)
 		    {
 			str[index] = list1.get(index)+" - "+"property";
 		    }else
 		    {
 			str[index] = list1.get(index)+" - "+"relation";
 		    }
+		counter++;
 	    }
 	
 	return str;
