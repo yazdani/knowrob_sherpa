@@ -145,7 +145,6 @@ get_all_salient_objects(Ant) :-
     jpl_array_to_list(Bnt,Ant),!.
     
 get_object_size(Ant,Bnt) :-
-    format('get_object_size'),
     jpl_new('com.github.knowrob_sherpa.ObjSizeInterface', [], Client),
     jpl_list_to_array(['com.github.knowrob_sherpa.client.SHERPA'], Arr),
     jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
