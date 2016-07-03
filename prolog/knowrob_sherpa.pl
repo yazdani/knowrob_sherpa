@@ -40,8 +40,8 @@ Copyright (C) 2016 Fereshta Yazdani
    check_object_property/3,
    check_objects_relation/4,
    get_all_salient_objects/1,
-   get_all_accomodations/1,
-   get_accomodation/1,
+   get_all_accommodations/1,
+   get_accommodation/1,
    command_to_robot/2,
    send_pose/2
   ]).
@@ -59,8 +59,8 @@ Copyright (C) 2016 Fereshta Yazdani
     sherpa_interface2(r),
     get_all_objects(r),
     get_all_properties(r),
-    get_all_accomodations(r),
-    get_accomodation(r),
+    get_all_accommodations(r),
+    get_accommodation(r),
     get_object_size(r,r),
     get_size(r,r),
     get_object_properties(r,r),
@@ -165,10 +165,10 @@ send_pose(Zet, Ant) :-
     jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
     jpl_call(Client, 'sendPose',[Zet],Ant),!.
     
-get_all_accomodations(Ant) :-
+get_all_accommodations(Ant) :-
     setof(Obj, get_accomodation(Obj), Ant).
 
-get_accomodation(Ant):-
+get_accommodation(Ant):-
      sherpa_interface(SAR),
      owl_has(Bnt, 'http://knowrob.org/kb/knowrob.owl#isLiving',literal(type(_,_))),    jpl_call(SAR, 'removeNamespace', [Bnt], Ant).
  
