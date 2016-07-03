@@ -40,6 +40,8 @@ Copyright (C) 2016 Fereshta Yazdani
    check_object_property/3,
    check_objects_relation/4,
    get_all_salient_objects/1,
+   get_all_accomodations/1,
+   get_accomodation/1,
    command_to_robot/2,
    send_pose/2
   ]).
@@ -57,6 +59,8 @@ Copyright (C) 2016 Fereshta Yazdani
     sherpa_interface2(r),
     get_all_objects(r),
     get_all_properties(r),
+    get_all_accomodations(r),
+    get_accomodation(r),
     get_object_size(r,r),
     get_size(r,r),
     get_object_properties(r,r),
@@ -88,21 +92,15 @@ get_all_objects(Bnt) :-
     jpl_array_to_list(Ant,Bnt),!.
 
 get_object_properties(Ant,Cnt) :-
-    format('1'),
     sherpa_interface(SAR),
-    format('2'),
     jpl_call(SAR, 'addNamespace', [Ant], Bnt),
-    format('3'),
     map_object_type(Bnt,TYPE),
-    format('4'),
     owl_has(Bnt, 'http://knowrob.org/kb/knowrob.owl#hasColor',literal(type(_,COLOR))),
-    format('5'),
+    owl_has(Bnt, 'http://knowrob.org/kb/knowrob.owl#isAlive',literal(type(_,MATE))), 
     get_size(Ant,SIZE),
-    format('6'),
     owl_has(TYPE,rdfs:subClassOf,ANI),
-    format('7'),
     jpl_call(SAR, 'removeNamespace', [ANI], LIFE),
-    jpl_call(SAR, 'elemsToList', [TYPE,COLOR,SIZE,LIFE], Dnt),
+    jpl_call(SAR, 'elemsToList', [LIFE,MATE,COLOR,SIZE], Dnt),
     jpl_array_to_list(Dnt,Cnt),!.
 
 get_all_properties(Bnt) :-
@@ -113,21 +111,21 @@ get_all_properties(Bnt) :-
 check_object_property(NAME,PROP,Cnt) :-
     sherpa_interface(SAR),
     jpl_call(SAR, 'addNamespace', [NAME], NOM),
-    map_object_type(NOM,TYPE),
-    jpl_call(SAR, 'replaceString', [TYPE], TYP),
-    jpl_call(SAR, 'addNamespace', [PROP], PRO),
-    owl_has(NOM, 'http://knowrob.org/kb/knowrob.owl#hasColor',literal(type(_,COLOR))), 
-    jpl_call(SAR, 'replaceString', [COLOR], FARB),
-    owl_has(TYPE,rdfs:subClassOf,ANI),
-    jpl_call(SAR, 'replaceString', [ANI], LIFE),
-    check_rules(TYP,FARB,PRO,LIFE,Cnt),!.
+    map_object_type(NOM, Ant),
+    owl_has(Ant,rdfs:subClassOf,TYPE),
+    jpl_call(SAR, 'removeNamespace', [TYPE], TYP),
+    jpl_call(SAR, 'setLower', [TYP], TYPO),
+    owl_has(NOM, 'http://knowrob.org/kb/knowrob.owl#hasColor',literal(type(_,COLOR))),
+    owl_has(NOM, 'http://knowrob.org/kb/knowrob.owl#isAlive',literal(type(_,ALIVE))), 
+    get_object_size(NAME, PRO),
+    check_rules(TYPO,COLOR,ALIVE,PRO,PROP,Cnt),!.
 
-    check_rules(TYPE,COLOR,PROP,LIFE,RESULT) :-
-    ==(LIFE,PROP) -> =(RESULT, 'true');
-    ==(TYPE,PROP) -> =(RESULT, 'true');
+    check_rules(TYP,COLOR,ALIVE,PRO,PROP,RESULT) :-
+    ==(ALIVE,PROP) -> =(RESULT, 'true');
+    ==(TYP,PROP) -> =(RESULT, 'true');
     ==(COLOR,PROP) -> =(RESULT, 'true');
-
-    =(RESULT,'false'),!.
+    ==(PRO,PROP) -> =(RESULT, 'true');
+   =(RESULT,'false'),!.
 
 check_objects_relation(Ant,Bnt,Cnt,Res) :-
     sherpa_interface(SAR),
@@ -148,11 +146,9 @@ get_object_size(Ant,Bnt) :-
     jpl_new('com.github.knowrob_sherpa.ObjSizeInterface', [], Client),
     jpl_list_to_array(['com.github.knowrob_sherpa.client.SHERPA'], Arr),
     jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
-    format(Ant),
     jpl_call(Client, 'getObjectSize',[Ant],Bnt),!.
 
 get_size(Ant,Bnt) :-
-    format('get_size'),
     get_object_size(Ant,Bnt),!.
 
 command_to_robot(Ant,S) :-
@@ -169,3 +165,11 @@ send_pose(Zet, Ant) :-
     jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
     jpl_call(Client, 'sendPose',[Zet],Ant),!.
     
+get_all_accomodations(Ant) :-
+    setof(Obj, get_accomodation(Obj), Ant).
+
+get_accomodation(Ant):-
+     sherpa_interface(SAR),
+     owl_has(Bnt, 'http://knowrob.org/kb/knowrob.owl#isLiving',literal(type(_,_))),    jpl_call(SAR, 'removeNamespace', [Bnt], Ant).
+ 
+ 
