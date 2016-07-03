@@ -243,8 +243,6 @@ public class SARInterface extends AbstractNodeMain{
 	list1.add("rock");
        	list1.add("animate");
 	list1.add("inanimate");
-        list1.add("broken");
-	list1.add("fixed");
 	list1.add("behind");
 	list1.add("left");
 	list1.add("right");
@@ -258,7 +256,7 @@ public class SARInterface extends AbstractNodeMain{
 	for(int index=0; index < list1.size() ; index++)
 	    {
 
-		if(counter <= 19)
+		if(counter <= 17)
 		    {
 			str[index] = list1.get(index)+" - "+"property";
 		    }else
@@ -271,7 +269,7 @@ public class SARInterface extends AbstractNodeMain{
 	return str;
     }
 
-    public String[] elemsToList(String type, String color, String size, String life)
+    public String[] elemsToList(String type, String life, String color, String size)
     {
 	String[] str;
 	if(size.equals("middle"))
@@ -310,8 +308,8 @@ public class SARInterface extends AbstractNodeMain{
 				}
 			    
 		   }
-	       str[1] = color;
-	       str[2] = life;
+	       str[1] = life;
+	       str[2] = color;
 	       
 	   }else
 		{
@@ -347,8 +345,8 @@ public class SARInterface extends AbstractNodeMain{
 				}
 			    
 			}
-		    str[1] = color;
-		    str[2] = life;
+		    str[1] = life;
+		    str[2] = color;
 		    str[3] = size;
 		}
 
@@ -393,7 +391,14 @@ public class SARInterface extends AbstractNodeMain{
     }
     public String addNamespace(String obj)
     {
+	//String s1 = obj.substring(0, 1).toUpperCase() + obj.substring(1);
 	return "http://knowrob.org/kb/knowrob.owl#"+obj;
+    }
+
+    public String setLower(String obj)
+    {
+	String s1 = obj.substring(0, 1).toLowerCase() + obj.substring(1);
+	return s1;
     }
 
     public boolean checkObjectType(String objname, String objtype)
