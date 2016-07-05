@@ -44,7 +44,7 @@ Copyright (C) 2016 Fereshta Yazdani
    get_accommodation/1,
    command_to_robot/2,
    send_pose/2,
-   get_action/1
+   check_action/1
   ]).
 
 :- use_module(library('semweb/rdf_db')).
@@ -70,7 +70,7 @@ Copyright (C) 2016 Fereshta Yazdani
     get_all_salient_objects(r),
     command_to_robot(r,r),
     send_pose(r,r),
-    get_action(r).
+    check_action(r).
 
 :- rdf_db:rdf_register_ns(knowrob, 'http://knowrob.org/kb/knowrob.owl#', [keep(true)]).
 
@@ -175,7 +175,7 @@ get_accommodation(Ant):-
      owl_has(Bnt, 'http://knowrob.org/kb/knowrob.owl#isLiving',literal(type(_,_))),    jpl_call(SAR, 'removeNamespace', [Bnt], Ant).
  
  
-get_action(Ant) :-
+check_action(Ant) :-
     jpl_new('com.github.knowrob_sherpa.QuadrotorPoseInterface', [], Client),
     jpl_list_to_array(['com.github.knowrob_sherpa.client.Quadrotor'], Arr),
     jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
