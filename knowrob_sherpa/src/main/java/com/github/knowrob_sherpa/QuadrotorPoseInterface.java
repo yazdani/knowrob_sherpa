@@ -19,7 +19,7 @@ import geometry_msgs.Pose;
 import quadrotor_controller.*;
 
 public class QuadrotorPoseInterface extends AbstractNodeMain{
-    private String result;
+    public static String result;
     
     public ConnectedNode node;
     ServiceClient<quadrotor_controller.cmd_srvRequest, quadrotor_controller.cmd_srvResponse> serviceClient;
@@ -85,7 +85,7 @@ public class QuadrotorPoseInterface extends AbstractNodeMain{
 			    @Override
 			    public void onSuccess(quadrotor_controller.cmd_srvResponse response) {
 		
-				response.getReply();
+				setResult(response.getReply());
 				
 	}
 			@Override
@@ -96,13 +96,25 @@ public class QuadrotorPoseInterface extends AbstractNodeMain{
 					    });
 }
 
-    public String sendPose(String text)
+    public void sendPose(String text)
     {
+	result = "Task Execution";
 	double[] array = getPose(text);
 	calledTheService(array);
-	return "finally";
+
+	//return "finally";
    }
 
+
+    public void setResult(String name)
+    {
+	result = name;
+    }
+
+    public String getResult()
+    {
+	return result;
+    }
 
     public double[] getPose(String res)
     {
