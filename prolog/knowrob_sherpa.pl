@@ -44,7 +44,10 @@ Copyright (C) 2016 Fereshta Yazdani
    get_accommodation/1,
    command_to_robot/2,
    send_pose/2,
-   check_action/1
+   check_action/1,
+   check_scan_completed/1,
+   scan_region/2,
+   normal_command/2
   ]).
 
 :- use_module(library('semweb/rdf_db')).
@@ -70,7 +73,10 @@ Copyright (C) 2016 Fereshta Yazdani
     get_all_salient_objects(r),
     command_to_robot(r,r),
     send_pose(r,r),
-    check_action(r).
+    check_action(r),
+    check_scan_completed(r),
+    scan_region(r,r),
+    normal_command(r,r).
 
 :- rdf_db:rdf_register_ns(knowrob, 'http://knowrob.org/kb/knowrob.owl#', [keep(true)]).
 
@@ -156,6 +162,11 @@ get_size(Ant,Bnt) :-
 command_to_robot(Ant,S) :-
     sherpa_interface(SAR),
     jpl_call(SAR, 'parseCmd', [Ant], Cnt),
+    ==(Cnt, 'http://knowrob.org/kb/knowrob.owl#area') -> scan_region(Cnt,S);
+    normal_command(Cnt, S).
+
+normal_command(Cnt,S) :-
+    sherpa_interface(SAR),
     current_object_pose(Cnt,[X,Y,Z,QX,QY,QZ,QW]),
     jpl_call(SAR, 'arrayToString', [X,Y,Z,QX,QY,QZ,QW], Zet),
     send_pose(Zet, S),!.
@@ -165,18 +176,31 @@ send_pose(Zet, Ant) :-
     jpl_new('com.github.knowrob_sherpa.QuadrotorPoseInterface', [], Client),
     jpl_list_to_array(['com.github.knowrob_sherpa.client.Quadrotor'], Arr),
     jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
-    jpl_call(Client, 'sendPose',[Zet], _),!.
+    jpl_call(Client, 'sendPose',[Zet], Ant),!.
     
 get_all_accommodations(Ant) :-
     setof(Obj, get_accomodation(Obj), Ant).
 
 get_accommodation(Ant):-
      sherpa_interface(SAR),
-     owl_has(Bnt, 'http://knowrob.org/kb/knowrob.owl#isLiving',literal(type(_,_))),    jpl_call(SAR, 'removeNamespace', [Bnt], Ant).
- 
+     owl_has(Bnt, 'http://knowrob.org/kb/knowrob.owl#isLiving',literal(type(_,_))),    
+    jpl_call(SAR, 'removeNamespace', [Bnt], Ant).
  
 check_action(Ant) :-
     jpl_new('com.github.knowrob_sherpa.QuadrotorPoseInterface', [], Client),
     jpl_list_to_array(['com.github.knowrob_sherpa.client.Quadrotor'], Arr),
     jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
     jpl_call(Client, 'getResult',[], Ant),!.
+
+scan_region(A,B):-
+    jpl_new('com.github.knowrob_sherpa.QuadrotorScanInterface', [], Client),
+    jpl_list_to_array(['com.github.knowrob_sherpa.scanclient.Quadrotor'], Arr),
+    jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
+    jpl_call(Client, 'scanArea',[A], B),!.
+
+check_scan_completed(A):-
+    jpl_new('com.github.knowrob_sherpa.QuadrotorScanInterface', [], Client),
+    jpl_list_to_array(['com.github.knowrob_sherpa.scanclient.Quadrotor'], Arr),
+    jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
+    jpl_call(Client, 'checkResult',[], A),!.
+
