@@ -433,8 +433,6 @@ public class SARInterface extends AbstractNodeMain{
     
     public String parseCmd(String value)
     {
-	System.out.println("parseCmd");
-       	System.out.println(value);
 	String[] parts = value.split("\\(");
        	String[] parts1 = parts[1].split("\\)");
 	String result = addNamespace(parts1[0]);

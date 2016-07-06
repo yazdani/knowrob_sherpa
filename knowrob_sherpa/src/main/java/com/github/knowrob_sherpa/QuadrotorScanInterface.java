@@ -18,11 +18,11 @@ import geometry_msgs.Pose;
 
 import quadrotor_controller.*;
 
-public class QuadrotorPoseInterface extends AbstractNodeMain{
+public class QuadrotorScanInterface extends AbstractNodeMain{
     public static String result;
     
     public ConnectedNode node;
-    ServiceClient<quadrotor_controller.cmd_srvRequest, quadrotor_controller.cmd_srvResponse> serviceClient;
+    ServiceClient<quadrotor_controller.scan_regRequest, quadrotor_controller.scan_regResponse> serviceClient;
 
     //  public SARInterface() {
 	
@@ -31,7 +31,7 @@ public class QuadrotorPoseInterface extends AbstractNodeMain{
     
  @Override
   public GraphName getDefaultNodeName() {
-    return GraphName.of("quadrotor_controller/Client");
+    return GraphName.of("quadrotor_controller/ScanClient");
   }
     
   @Override
@@ -46,14 +46,15 @@ public class QuadrotorPoseInterface extends AbstractNodeMain{
 	  e.printStackTrace();
       }
     try {
-	String service_name = "setPoseToVel";
-	serviceClient = node.newServiceClient(service_name, quadrotor_controller.cmd_srv._TYPE);
+	String service_name = "scanRegion";
+	serviceClient = node.newServiceClient(service_name, quadrotor_controller.scan_reg._TYPE);
     } catch (ServiceNotFoundException e) {
       throw new RosRuntimeException(e);
     }
   }
-    public void calledTheService (double[] objpose)
+    public void calledTheService (String value)
 	{
+
 	    try {
         	 serviceClient = null;
 		 while(serviceClient == null) {
@@ -64,26 +65,15 @@ public class QuadrotorPoseInterface extends AbstractNodeMain{
 
 			 e.printStackTrace();
 		 }
-	    //int[] ret = getPose(objpose);
-	    geometry_msgs.Pose pos = node.getTopicMessageFactory().newFromType(geometry_msgs.Pose._TYPE);
-	    geometry_msgs.Point point = node.getTopicMessageFactory().newFromType(geometry_msgs.Point._TYPE);
-	    geometry_msgs.Quaternion quat = node.getTopicMessageFactory().newFromType(geometry_msgs.Quaternion._TYPE);
-	    point.setX(objpose[0]);
-	    point.setY(objpose[1]);
-	    point.setZ(12.0);
-	    quat.setX(objpose[3]);
-	    quat.setY(objpose[4]);
-	    quat.setZ(objpose[5]);
-	    quat.setW(objpose[6]);
-            pos.setPosition(point);
-	    pos.setOrientation(quat);
-	    quadrotor_controller.cmd_srvRequest request;
+
+	    quadrotor_controller.scan_regRequest request;
 	    request = serviceClient.newMessage();
-	    request.setGoal(pos);
-	    serviceClient.call(request,new ServiceResponseListener<quadrotor_controller.cmd_srvResponse>()				
+	    request.setStart(value);
+
+	    serviceClient.call(request,new ServiceResponseListener<quadrotor_controller.scan_regResponse>()				
 			{
 			    @Override
-			    public void onSuccess(quadrotor_controller.cmd_srvResponse response) {
+			    public void onSuccess(quadrotor_controller.scan_regResponse response) {
 		
 				setResult(response.getReply());
 				
@@ -96,11 +86,10 @@ public class QuadrotorPoseInterface extends AbstractNodeMain{
 					    });
 }
 
-    public String sendPose(String text)
+    public String scanArea(String text)
     {
 	result = "Executing task";
-	double[] array = getPose(text);
-	calledTheService(array);
+	calledTheService(text);
 
 	return "Start task execution";
    }
@@ -111,24 +100,9 @@ public class QuadrotorPoseInterface extends AbstractNodeMain{
 	result = name;
     }
 
-    public String getResult()
+    public String checkResult()
     {
 	return result;
-    }
-
-    public double[] getPose(String res)
-    {
-	String[] coms = res.split(",");
-
-	double[] nums = new double[coms.length];
-	
-	for(int index= 0; index < coms.length; index++)
-	    {
-		nums[index] = Double.parseDouble(coms[index]);
-		
-	    }
- 
-	return nums;
     }
 
 }
