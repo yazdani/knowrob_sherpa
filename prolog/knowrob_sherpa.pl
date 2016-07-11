@@ -47,7 +47,7 @@ Copyright (C) 2016 Fereshta Yazdani
    check_action/1,
    check_scan_completed/1,
    scan_region/2,
-   normal_command/2
+   normal_command/4
   ]).
 
 :- use_module(library('semweb/rdf_db')).
@@ -76,7 +76,7 @@ Copyright (C) 2016 Fereshta Yazdani
     check_action(r),
     check_scan_completed(r),
     scan_region(r,r),
-    normal_command(r,r).
+    normal_command(r,r,r,r).
 
 :- rdf_db:rdf_register_ns(knowrob, 'http://knowrob.org/kb/knowrob.owl#', [keep(true)]).
 
@@ -161,19 +161,21 @@ get_size(Ant,Bnt) :-
 
 command_to_robot(Ant,S) :-
     sherpa_interface(SAR),
-    jpl_call(SAR, 'parseCmd', [Ant], Cnt),
-    ==(Cnt, 'http://knowrob.org/kb/knowrob.owl#area') -> scan_region(Cnt,S);
-    normal_command(Cnt, S).
-
-normal_command(Cnt,S) :-
-    sherpa_interface(SAR),
-    current_object_pose(Cnt,[X,Y,Z,QX,QY,QZ,QW]),
-    jpl_call(SAR, 'arrayToString', [X,Y,Z,QX,QY,QZ,QW], Zet),
-    send_pose(Zet, S),!.
-    
+    jpl_call(SAR, 'getAction', [Ant], ACT),
+    jpl_call(SAR, 'getPreposition', [Ant], PREP),
+    jpl_call(SAR, 'getEntity', [Ant], ENT),
+    ==(ENT, 'area') -> scan_region(ENT,S);
+    normal_command(ACT,PREP,ENT,S).
+   
+normal_command(ACT,PREP,ENT,S) :-
+    jpl_new('com.github.knowrob_sherpa.LispActionInterface', [], Client),
+    jpl_list_to_array(['com.github.knowrob_sherpa.client.Quadrotor'], Arr),
+    jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
+    jpl_call(Client, 'sendPose',[ACT,PREP,ENT], ZET),
+    send_pose(ZET, S).
 
 send_pose(Zet, Ant) :-
-    jpl_new('com.github.knowrob_sherpa.QuadrotorPoseInterface', [], Client),
+    jpl_new('com.github.knowrob_sherpa.QuadrotorPointsInterface', [], Client),
     jpl_list_to_array(['com.github.knowrob_sherpa.client.Quadrotor'], Arr),
     jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
     jpl_call(Client, 'sendPose',[Zet], Ant),!.
