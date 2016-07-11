@@ -431,12 +431,37 @@ public class SARInterface extends AbstractNodeMain{
 	return objtype;
     }
     
-    public String parseCmd(String value)
+    public String getEntity(String value)
     {
 	String[] parts = value.split("\\(");
        	String[] parts1 = parts[1].split("\\)");
-	String result = addNamespace(parts1[0]);
-	return result;
+	String[] parts2 = parts1[0].split(",");
+	if(parts2.length > 1)
+	    {
+		return parts2[1];
+	    }
+
+	return parts2[0];
+    }
+    
+    public String getPreposition(String value)
+    {
+	String[] parts = value.split("\\(");
+       	String[] parts1 = parts[1].split("\\)");
+	String[] parts2 = parts1[0].split(",");
+	if(parts2.length > 1)
+	    {
+		return parts2[0];
+	    }
+
+	return "null";
+    }
+
+    public String getAction(String value)
+    {
+	String[] parts = value.split("\\(");
+       
+	return parts[0];
     }
   
 
