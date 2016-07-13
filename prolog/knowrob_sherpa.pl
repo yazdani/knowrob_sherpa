@@ -29,7 +29,7 @@ Copyright (C) 2016 Fereshta Yazdani
 */
 
 :- module(knowrob_sherpa,
-  [
+      [
    sherpa_interface/0,
    sherpa_interface/1,
    get_all_objects/1,
@@ -47,9 +47,12 @@ Copyright (C) 2016 Fereshta Yazdani
    check_action/1,
    check_scan_completed/1,
    scan_region/2,
-   normal_command/4
+   normal_command/4,
+   get_action/2,
+   get_preposition/2,
+   get_entity/2
   ]).
-
+    
 :- use_module(library('semweb/rdf_db')).
 :- use_module(library('semweb/rdfs')).
 :- use_module(library('owl_parser')).
@@ -76,14 +79,17 @@ Copyright (C) 2016 Fereshta Yazdani
     check_action(r),
     check_scan_completed(r),
     scan_region(r,r),
-    normal_command(r,r,r,r).
-
+    normal_command(r,r,r,r),
+    get_action(r,r),
+    get_preposition(r,r),
+    get_entity(r,r).
+    
 :- rdf_db:rdf_register_ns(knowrob, 'http://knowrob.org/kb/knowrob.owl#', [keep(true)]).
-
+    
 sherpa_interface :- sherpa_interface(_).
-
-:-assert(sherpa_inter(fail)).
-sherpa_interface(SAR) :-
+    
+    :-assert(sherpa_inter(fail)).
+    sherpa_interface(SAR) :-
     sherpa_inter(fail),
     jpl_new('com.github.knowrob_sherpa.SARInterface', [], SAR),
     retract(sherpa_inter(fail)),
@@ -111,7 +117,7 @@ get_object_properties(Ant,Cnt) :-
     jpl_call(SAR, 'elemsToList', [LIFE,MATE,COLOR,SIZE], Dnt),
     jpl_array_to_list(Dnt,Cnt),!.
 
-get_all_properties(Bnt) :-
+    get_all_properties(Bnt) :-
     sherpa_interface(SAR),
     jpl_call(SAR, 'getAllProperties', [], Ant),
     jpl_array_to_list(Ant,Bnt),!.
@@ -158,30 +164,58 @@ get_object_size(Ant,Bnt) :-
 
 get_size(Ant,Bnt) :-
     get_object_size(Ant,Bnt),!.
+    
+command_to_robot(Ant,S) :-
+    format('com'),
+    get_entity(Ant,ET),
+    ==(ET, 'area') -> scan_region(ET,S),!.
 
 command_to_robot(Ant,S) :-
+    format('command'),
+    get_action(Ant,AT),
+    get_preposition(Ant,PT),
+    get_entity(Ant,ET),
+    not(==(ET, 'area')) ->
+    normal_command(AT,PT,ET,S),!.
+    
+get_action(A,S):- 
     sherpa_interface(SAR),
-    jpl_call(SAR, 'getAction', [Ant], ACT),
-    jpl_call(SAR, 'getPreposition', [Ant], PREP),
-    jpl_call(SAR, 'getEntity', [Ant], ENT),
-    ==(ENT, 'area') -> scan_region(ENT,S);
-    normal_command(ACT,PREP,ENT,S).
-   
-normal_command(ACT,PREP,ENT,S) :-
-    jpl_new('com.github.knowrob_sherpa.LispActionInterface', [], Client),
+    format('getAction'),
+    jpl_call(SAR, 'getAction', [A], S),!.
+
+get_preposition(A,S):- 
+    sherpa_interface(SAR),
+    format('getprepo'),
+    jpl_call(SAR, 'getPreposition', [A], S),!.
+
+get_entity(A,S):- 
+    sherpa_interface(SAR),
+    format('getEntity'),
+    jpl_call(SAR, 'getEntity', [A], S),!.
+
+normal_command(A,P,E,S):-
+   jpl_new('com.github.knowrob_sherpa.LispActionInterface', [], Client),
     jpl_list_to_array(['com.github.knowrob_sherpa.client.Quadrotor'], Arr),
     jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
-    jpl_call(Client, 'sendPose',[ACT,PREP,ENT], ZET),
+    format('sendPose'),
+    jpl_call(Client, 'sendPose',[A,P,E], ZET),
     send_pose(ZET, S).
 
 send_pose(Zet, Ant) :-
-    jpl_new('com.github.knowrob_sherpa.QuadrotorPointsInterface', [], Client),
-    jpl_list_to_array(['com.github.knowrob_sherpa.client.Quadrotor'], Arr),
-    jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
-    jpl_call(Client, 'sendPose',[Zet], Ant),!.
+    format(Zet),
+     format('huhuhuhuhufdfsdfsdfhuhu\n'),
+     jpl_new('com.github.knowrob_sherpa.QuadrotorPointsInterface', [], Client),
+     jpl_list_to_array(['com.github.knowrob_sherpa.client.Quadrotor'], Arr),
+     jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
+   format('huhuhuhuhuhuhhjhhjhu\n'),
+     jpl_call(Client, 'getPose',[Zet],_),
+    format('huhuhuhuhuhuhu45\n'),
+     jpl_call(Client, 'sendPose',[], Ant),!.
+    
+   
     
 get_all_accommodations(Ant) :-
-    setof(Obj, get_accomodation(Obj), Ant).
+    setof(Obj, get_accommodation(Obj), Ant).
 
 get_accommodation(Ant):-
      sherpa_interface(SAR),
