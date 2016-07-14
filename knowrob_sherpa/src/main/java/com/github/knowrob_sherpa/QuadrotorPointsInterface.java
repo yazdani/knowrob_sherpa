@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.lang.Integer;
 import java.lang.Float;
+import java.lang.Double;
 import org.ros.exception.RemoteException;
 import org.ros.exception.RosRuntimeException;
 import org.ros.exception.ServiceNotFoundException;
@@ -20,7 +21,7 @@ import quadrotor_controller.*;
 
 public class QuadrotorPointsInterface extends AbstractNodeMain{
     public static String result;
-    
+    public static float[] nums  = new float[7];
     public ConnectedNode node;
     ServiceClient<quadrotor_controller.cmd_pointsRequest, quadrotor_controller.cmd_pointsResponse> serviceClient;
 
@@ -90,11 +91,11 @@ public class QuadrotorPointsInterface extends AbstractNodeMain{
 					    });
 }
 
-    public String sendPose(String text)
+    public String sendPose()
     {
 	result = "Executing task";
-	float[] array = getPose(text);
-	calledTheService(array);
+	//float[] array = getPose(text);
+	calledTheService(nums);
 
 	return "Start task execution";
    }
@@ -110,19 +111,36 @@ public class QuadrotorPointsInterface extends AbstractNodeMain{
 	return result;
     }
 
-    public float[] getPose(String res)
+    public void getPose(String res)
     {
 	String[] coms = res.split(",");
-
-	float[] nums = new float[coms.length];
-	
-	for(int index= 0; index < coms.length; index++)
+	String[] attach = new String[7];
+	String[] sec = new String[2];
+	for(int intel = 0; intel < coms.length; intel++)
 	    {
-		nums[index] = Float.parseFloat(coms[index]);
+		sec = coms[intel].split("d");
+		attach[intel] = sec[0];
 		
 	    }
+
+	   int intVal = 0;
  
-	return nums;
+	for(int index= 0; index < attach.length; index++)
+	    {
+		    System.out.println(Float.parseFloat(attach[index]));
+		try {
+		    double tmp = Double.parseDouble(attach[index]);
+		    float tmp2 = (float) tmp;
+		    nums[index] = tmp2;
+		} catch (NumberFormatException e) {
+		    //Log it if needed
+		    float tmp = 0.0f;
+		    nums[index] = tmp;
+
+			}
+	    }
+ 
+	//	return nums;
     }
 
 }

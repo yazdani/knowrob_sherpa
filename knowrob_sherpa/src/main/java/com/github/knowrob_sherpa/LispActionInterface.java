@@ -87,10 +87,16 @@ public class LispActionInterface extends AbstractNodeMain{
 
     public String sendPose(String action, String prep, String name)
     {
-	result = "Executing task";
+	result = "";
 	calledTheService(action, prep, name);
-
-	return "Start task execution";
+	try {
+	    while(result.equals("")) {
+		Thread.sleep(100);
+	    }
+	} catch (InterruptedException e) {
+	    e.printStackTrace();
+	}
+	return result;
    }
 
 
