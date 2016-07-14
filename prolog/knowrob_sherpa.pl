@@ -166,12 +166,10 @@ get_size(Ant,Bnt) :-
     get_object_size(Ant,Bnt),!.
     
 command_to_robot(Ant,S) :-
-    format('com'),
     get_entity(Ant,ET),
     ==(ET, 'area') -> scan_region(ET,S),!.
 
 command_to_robot(Ant,S) :-
-    format('command'),
     get_action(Ant,AT),
     get_preposition(Ant,PT),
     get_entity(Ant,ET),
@@ -180,36 +178,28 @@ command_to_robot(Ant,S) :-
     
 get_action(A,S):- 
     sherpa_interface(SAR),
-    format('getAction'),
     jpl_call(SAR, 'getAction', [A], S),!.
 
 get_preposition(A,S):- 
     sherpa_interface(SAR),
-    format('getprepo'),
     jpl_call(SAR, 'getPreposition', [A], S),!.
 
 get_entity(A,S):- 
     sherpa_interface(SAR),
-    format('getEntity'),
     jpl_call(SAR, 'getEntity', [A], S),!.
 
 normal_command(A,P,E,S):-
    jpl_new('com.github.knowrob_sherpa.LispActionInterface', [], Client),
     jpl_list_to_array(['com.github.knowrob_sherpa.client.Quadrotor'], Arr),
     jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
-    format('sendPose'),
     jpl_call(Client, 'sendPose',[A,P,E], ZET),
     send_pose(ZET, S).
 
 send_pose(Zet, Ant) :-
-    format(Zet),
-     format('huhuhuhuhufdfsdfsdfhuhu\n'),
      jpl_new('com.github.knowrob_sherpa.QuadrotorPointsInterface', [], Client),
      jpl_list_to_array(['com.github.knowrob_sherpa.client.Quadrotor'], Arr),
      jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
-   format('huhuhuhuhuhuhhjhhjhu\n'),
      jpl_call(Client, 'getPose',[Zet],_),
-    format('huhuhuhuhuhuhu45\n'),
      jpl_call(Client, 'sendPose',[], Ant),!.
     
    
