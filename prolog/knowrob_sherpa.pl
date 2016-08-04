@@ -50,7 +50,9 @@ Copyright (C) 2016 Fereshta Yazdani
    normal_command/4,
    get_action/2,
    get_preposition/2,
-   get_entity/2
+   get_entity/2,
+   show_picture/2,
+   take_picture/2
   ]).
     
 :- use_module(library('semweb/rdf_db')).
@@ -82,7 +84,9 @@ Copyright (C) 2016 Fereshta Yazdani
     normal_command(r,r,r,r),
     get_action(r,r),
     get_preposition(r,r),
-    get_entity(r,r).
+    get_entity(r,r),
+    show_picture(r,r),
+    take_picture(r,r).
     
 :- rdf_db:rdf_register_ns(knowrob, 'http://knowrob.org/kb/knowrob.owl#', [keep(true)]).
     
@@ -170,10 +174,22 @@ command_to_robot(Ant,S) :-
     ==(ET, 'area') -> scan_region(ET,S),!.
 
 command_to_robot(Ant,S) :-
+    get_action(Ant,ES),
+    get_entity(Ant,ET),
+    ==(ES, 'take') -> take_picture(ET,S),!.
+
+command_to_robot(Ant,S) :-
+    get_action(Ant,ES),
+    get_entity(Ant,ET),
+    ==(ES, 'show') -> show_picture(ET,S),!.
+
+command_to_robot(Ant,S) :-
     get_action(Ant,AT),
     get_preposition(Ant,PT),
     get_entity(Ant,ET),
-    not(==(ET, 'area')) ->
+    not(==(ET, 'area')),
+    not(==(ET, 'take')),
+    not(==(ET,'show')),
     normal_command(AT,PT,ET,S),!.
     
 get_action(A,S):- 
@@ -230,3 +246,14 @@ check_scan_completed(A):-
     jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
     jpl_call(Client, 'checkResult',[], A),!.
 
+take_picture(A,B):-
+    jpl_new('com.github.knowrob_sherpa.TakeImage', [], Client),
+    jpl_list_to_array(['com.github.knowrob_sherpa.imageclient.TakeImage'], Arr),
+    jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
+    jpl_call(Client, 'takeImage',[A], B),!.
+ 
+show_picture(A,B):-
+    jpl_new('com.github.knowrob_sherpa.ShowImage', [], Client),
+    jpl_list_to_array(['com.github.knowrob_sherpa.imageclient.ShowImage'], Arr),
+    jpl_call('org.knowrob.utils.ros.RosUtilities',runRosjavaNode,[Client, Arr],_),
+    jpl_call(Client, 'showImage',[A], B),!.
