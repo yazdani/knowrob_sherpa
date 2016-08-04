@@ -9,7 +9,7 @@ project(knowrob_sherpa)
 # Catkin
 ##############################################################################
 
-find_package(catkin REQUIRED COMPONENTS rosjava_build_tools tf_prolog rosprolog cmd_mission rosjava_messages rosjava_bootstrap quadrotor_controller)
+find_package(catkin REQUIRED COMPONENTS rosjava_build_tools tf_prolog rosprolog cmd_mission rosjava_messages rosjava_bootstrap quadrotor_controller img_mission)
 
 # Set the gradle targets you want catkin's make to run by default, e.g.
 #   catkin_rosjava_setup(installApp)
@@ -17,7 +17,7 @@ find_package(catkin REQUIRED COMPONENTS rosjava_build_tools tf_prolog rosprolog 
 # add tasks to this for you when you create subprojects.
 catkin_rosjava_setup(installApp publishMavenJavaPublicationToMavenRepository writeClasspath)
 
-catkin_package(CATKIN_DEPENDS tf_prolog cmd_mission quadrotor_controller)
+catkin_package(CATKIN_DEPENDS tf_prolog cmd_mission quadrotor_controller img_mission)
 
 ##############################################################################
 # Installation

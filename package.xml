@@ -47,7 +47,9 @@
   <build_depend>rosjava_bootstrap</build_depend>
   <build_depend>tf_prolog</build_depend>
  <build_depend>cmd_mission</build_depend>
+ <build_depend>img_mission</build_depend>
  <build_depend>quadrotor_controller</build_depend>
+ <run_depend>img_mission</run_depend>
  <run_depend>quadrotor_controller</run_depend>
  <run_depend>cmd_mission</run_depend>
   <run_depend>tf_prolog</run_depend>
