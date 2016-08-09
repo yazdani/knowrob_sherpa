@@ -28,6 +28,7 @@ mainClassName = 'org.ros.RosRun'
 
 dependencies {
  compile project(':cmd_mission')
+ compile project(':img_mission')
  compile project(':quadrotor_controller')
 
   /* An external maven artifact dependency */

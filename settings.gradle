@@ -16,5 +16,6 @@
 
 include 'knowrob_sherpa'
 include 'cmd_mission'
+include 'img_mission'
 include 'quadrotor_controller'
 include 'geometry_msgs'
