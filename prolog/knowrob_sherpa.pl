@@ -187,6 +187,7 @@ command_to_robot(Ant,S) :-
     get_action(Ant,AT),
     get_preposition(Ant,PT),
     get_entity(Ant,ET),
+    ==(AT, 'goto'),
     not(==(ET, 'area')),
     not(==(ET, 'take')),
     not(==(ET,'show')),
