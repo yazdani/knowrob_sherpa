@@ -225,6 +225,12 @@ public class SARInterface extends AbstractNodeMain{
     public String[] getAllProperties()
     {
 	ArrayList<String> list1 = new ArrayList<String>();	
+	list1.add("tree");
+	list1.add("victim");
+	list1.add("human");
+	list1.add("pylon");
+	list1.add("mountain");
+	list1.add("rock");
 	list1.add("red");
 	list1.add("green");
 	list1.add("darkgreen");
@@ -235,12 +241,6 @@ public class SARInterface extends AbstractNodeMain{
 	list1.add("grey");
 	list1.add("large");
 	list1.add("small");
-	list1.add("tree");
-	list1.add("victim");
-	list1.add("human");
-	list1.add("pylon");
-	list1.add("mountain");
-	list1.add("rock");
        	list1.add("animate");
 	list1.add("inanimate");
 	list1.add("behind");
