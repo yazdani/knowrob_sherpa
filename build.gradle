@@ -18,6 +18,9 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.2.1'
 }
 buildscript {
+  apply from: "https://github.com/rosjava/rosjava_bootstrap/raw/indigo/buildscript.gradle"
+}
+/*
     def rosMavenPath = "$System.env.ROS_MAVEN_PATH".split(':').collect { 'file://' + it }
     def rosMavenRepository = "$System.env.ROS_MAVEN_REPOSITORY"
     repositories {
@@ -35,6 +38,7 @@ buildscript {
         classpath group: 'org.ros.rosjava_bootstrap', name: 'gradle_plugins', version: '[0.1,0.2)'
     }
 }
+*/
 
 apply plugin: 'catkin'
 project.catkin.tree.generate()

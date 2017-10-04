@@ -17,7 +17,7 @@ find_package(catkin REQUIRED COMPONENTS rosjava_build_tools tf_prolog rosprolog 
 # add tasks to this for you when you create subprojects.
 catkin_rosjava_setup(installApp publishMavenJavaPublicationToMavenRepository writeClasspath)
 
-catkin_package(CATKIN_DEPENDS tf_prolog cmd_mission quadrotor_controller img_mission)
+catkin_package(CATKIN_DEPENDS tf_prolog cmd_mission quadrotor_controller img_mission knowrob_common)
 
 ##############################################################################
 # Installation
