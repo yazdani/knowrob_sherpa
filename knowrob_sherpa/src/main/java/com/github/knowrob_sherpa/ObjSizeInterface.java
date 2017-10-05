@@ -20,11 +20,6 @@ public class ObjSizeInterface extends AbstractNodeMain{
     public ConnectedNode node;
     ServiceClient<cmd_mission.get_obj_typeRequest, cmd_mission.get_obj_typeResponse> serviceClient;
 
-    //  public SARInterface() {
-	
-    //	System.out.println("SAR-Interface is starting");
-    // }
-    
  @Override
   public GraphName getDefaultNodeName() {
     return GraphName.of("cmd_mission/Client");
@@ -33,7 +28,6 @@ public class ObjSizeInterface extends AbstractNodeMain{
   @Override
   public void onStart(final ConnectedNode connectedNode) {
       this.node = connectedNode;
-      // wait for node to be ready
       try {
 	  while(node == null) {
 	      Thread.sleep(100);
@@ -54,7 +48,6 @@ public class ObjSizeInterface extends AbstractNodeMain{
 	    try {
         	 serviceClient = null;
 		 while(serviceClient == null) {
-		     //System.out.println("Waiting for service client.");
 		     Thread.sleep(100);
 			 }
 		 } catch (InterruptedException e) {
