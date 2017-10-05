@@ -23,11 +23,6 @@ public class LispActionInterface extends AbstractNodeMain{
     
     public ConnectedNode node;
     ServiceClient<cmd_mission.get_reason_poseRequest, cmd_mission.get_reason_poseResponse> serviceClient;
-
-    //  public SARInterface() {
-	
-    //	System.out.println("SAR-Interface is starting");
-    // }
     
  @Override
   public GraphName getDefaultNodeName() {
@@ -37,7 +32,6 @@ public class LispActionInterface extends AbstractNodeMain{
   @Override
   public void onStart(final ConnectedNode connectedNode) {
       this.node = connectedNode;
-      // wait for node to be ready
       try {
 	  while(node == null) {
 	      Thread.sleep(100);
@@ -57,7 +51,6 @@ public class LispActionInterface extends AbstractNodeMain{
 	    try {
         	 serviceClient = null;
 		 while(serviceClient == null) {
-		     //System.out.println("Waiting for service client.");
 		     Thread.sleep(100);
 			 }
 		 } catch (InterruptedException e) {
