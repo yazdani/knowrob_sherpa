@@ -23,11 +23,6 @@ public class TakeImage extends AbstractNodeMain{
     
     public ConnectedNode node;
     ServiceClient<img_mission.returnStringRequest, img_mission.returnStringResponse> serviceClient;
-
-    //  public SARInterface() {
-	
-    //	System.out.println("SAR-Interface is starting");
-    // }
     
  @Override
   public GraphName getDefaultNodeName() {
@@ -37,7 +32,6 @@ public class TakeImage extends AbstractNodeMain{
   @Override
   public void onStart(final ConnectedNode connectedNode) {
       this.node = connectedNode;
-      // wait for node to be ready
       try {
 	  while(node == null) {
 	      Thread.sleep(100);
@@ -59,19 +53,14 @@ public class TakeImage extends AbstractNodeMain{
 	    try {
         	 serviceClient = null;
 		 while(serviceClient == null) {
-		     //	     System.out.println("Waiting for service client.");
 		     Thread.sleep(100);
 			 }
 		 } catch (InterruptedException e) {
-  System.out.println("twewwes3");
 			 e.printStackTrace();
 		 }
-	    System.out.println("tes3sss");
 	     img_mission.returnStringRequest request;
-  System.out.println("tes3ddsd");
 	    request = serviceClient.newMessage();
 	    request.setGoal(value);
-	    System.out.println("test5");
 	    serviceClient.call(request,new ServiceResponseListener< img_mission.returnStringResponse>()				
 			{
 			    @Override
@@ -90,11 +79,8 @@ public class TakeImage extends AbstractNodeMain{
 
     public String takeImage(String text)
     {
-	System.out.println("test");
 	result = "";
-	System.out.println(text);
 	calledTheService(text);
-	System.out.println("test1");
 	try {
 	    while(result.equals("")) {
 		Thread.sleep(100);
@@ -102,7 +88,6 @@ public class TakeImage extends AbstractNodeMain{
 	} catch (InterruptedException e) {
 	    e.printStackTrace();
 	}
-	System.out.println("test2");
 	return result;
    }
 
