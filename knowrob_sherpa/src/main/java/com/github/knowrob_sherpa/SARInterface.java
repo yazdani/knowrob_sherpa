@@ -23,11 +23,6 @@ public class SARInterface extends AbstractNodeMain{
     
     public ConnectedNode node;
     ServiceClient<cmd_mission.check_objs_relationRequest, cmd_mission.check_objs_relationResponse> serviceClient;
-
-    //  public SARInterface() {
-	
-    //	System.out.println("SAR-Interface is starting");
-    // }
     
  @Override
   public GraphName getDefaultNodeName() {
@@ -37,7 +32,7 @@ public class SARInterface extends AbstractNodeMain{
   @Override
   public void onStart(final ConnectedNode connectedNode) {
       this.node = connectedNode;
-      // wait for node to be ready
+
       try {
 	  while(node == null) {
 	      Thread.sleep(100);
@@ -58,11 +53,10 @@ public class SARInterface extends AbstractNodeMain{
 	    setProp(property);
 	    setObject1(obj1);
 	    setObject2(obj2);
-	    //System.out.println(serviceClient+" haha ");
+
 	    try {
 		serviceClient = null;
 		while(serviceClient == null) {
-		    //System.out.println("Waiting for service client.");
 		    Thread.sleep(100);
 			}
 		} catch (InterruptedException e) {
@@ -74,7 +68,6 @@ public class SARInterface extends AbstractNodeMain{
 	    request.setProperty(property);
 	    request.setObj1(obj1);
 	    request.setObj2(obj2);
-	    //System.out.println(serviceClient+" haha2 ");
 	    serviceClient.call(request,new ServiceResponseListener<cmd_mission.check_objs_relationResponse>()				
 			{
 			    @Override
@@ -177,7 +170,6 @@ public class SARInterface extends AbstractNodeMain{
      **/
     public String[] getAllObjects(String[] objs)
     {
-	//	System.out.println("queryAllObjects");
 	ArrayList<String> list = new ArrayList<String>();
 	for(int index = 0; index < objs.length; index++)
 	    {
@@ -391,7 +383,6 @@ public class SARInterface extends AbstractNodeMain{
     }
     public String addNamespace(String obj)
     {
-	//String s1 = obj.substring(0, 1).toUpperCase() + obj.substring(1);
 	return "http://knowrob.org/kb/knowrob.owl#"+obj;
     }
 
