@@ -13,6 +13,11 @@ import org.ros.node.service.ServiceClient;
 import org.ros.node.service.ServiceResponseListener;
 
 import cmd_mission.*;
+/*
+ * This class creates a server in order to get the size of an object
+ * such as middle, big or small
+ *
+ */
 
 public class ObjSizeInterface extends AbstractNodeMain{
     private String result;
