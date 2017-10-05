@@ -23,11 +23,6 @@ public class QuadrotorPoseInterface extends AbstractNodeMain{
     
     public ConnectedNode node;
     ServiceClient<quadrotor_controller.cmd_srvRequest, quadrotor_controller.cmd_srvResponse> serviceClient;
-
-    //  public SARInterface() {
-	
-    //	System.out.println("SAR-Interface is starting");
-    // }
     
  @Override
   public GraphName getDefaultNodeName() {
@@ -37,7 +32,6 @@ public class QuadrotorPoseInterface extends AbstractNodeMain{
   @Override
   public void onStart(final ConnectedNode connectedNode) {
       this.node = connectedNode;
-      // wait for node to be ready
       try {
 	  while(node == null) {
 	      Thread.sleep(100);
@@ -57,14 +51,12 @@ public class QuadrotorPoseInterface extends AbstractNodeMain{
 	    try {
         	 serviceClient = null;
 		 while(serviceClient == null) {
-		     //System.out.println("Waiting for service client.");
 		     Thread.sleep(100);
 			 }
 		 } catch (InterruptedException e) {
 
 			 e.printStackTrace();
 		 }
-	    //int[] ret = getPose(objpose);
 	    geometry_msgs.Pose pos = node.getTopicMessageFactory().newFromType(geometry_msgs.Pose._TYPE);
 	    geometry_msgs.Point point = node.getTopicMessageFactory().newFromType(geometry_msgs.Point._TYPE);
 	    geometry_msgs.Quaternion quat = node.getTopicMessageFactory().newFromType(geometry_msgs.Quaternion._TYPE);
